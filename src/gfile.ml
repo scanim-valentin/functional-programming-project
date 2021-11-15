@@ -1,6 +1,6 @@
 open Graph
 open Printf
-
+    
 type path = string
 
 (* Format of text files:
@@ -16,7 +16,7 @@ type path = string
    e 3 1 11
    e 0 2 8
 
-*)
+ *)
 
 let write_file path graph =
 
@@ -32,9 +32,9 @@ let write_file path graph =
 
   (* Write all arcs *)
   e_iter graph (fun id1 id2 lbl -> fprintf ff "e %d %d %s\n" id1 id2 lbl) ;
-
+  
   fprintf ff "\n%% End of graph\n" ;
-
+  
   close_out ff ;
   ()
 
@@ -95,7 +95,7 @@ let from_file path =
   in
 
   let final_graph = loop 0 empty_graph in
-
+  
   close_in infile ;
   final_graph
-
+  
