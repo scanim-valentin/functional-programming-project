@@ -2,23 +2,23 @@
 
 %% Nodes
 
-n 88 209     % This is node #0, with its coordinates (which are not used by the algorithms).
-n 408 183
-n 269 491
-n 261 297
-n 401 394
-n 535 294    % This is node #5.
+n 88 209 0    % This is node #0, with its coordinates (which are not used by the algorithms).
+n 408 183 1
+n 269 491 2
+n 261 297 3
+n 401 394 4
+n 535 294 5   % This is node #5.
 
 
 %% Edges
 
-e 3 1 11     % An edge from 3 to 1, labeled "11".
-e 3 2 2
-e 1 5 21
-e 4 5 14
-e 1 4 1
-e 0 1 7
-e 0 3 10
-e 3 4 5
-e 2 4 12
-e 0 2 8
+e 3 1 0 11     % An edge from 3 to 1, labeled "11".
+e 3 2 1 2
+e 1 5 2 21
+e 4 5 3 14
+e 1 4 4 1
+e 0 1 5 7
+e 0 3 6 10
+e 3 4 7 5
+e 2 4 8 12
+e 0 2 9 8

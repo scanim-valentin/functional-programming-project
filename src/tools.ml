@@ -7,5 +7,3 @@ let clone_nodes gr = n_fold gr new_node empty_graph
 let gmap gr f = assert false
 
 let add_arc gr n1 n2 p = assert false
-
-
