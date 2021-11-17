@@ -1,5 +1,5 @@
-open Tools
 open Gfile
+open Tools
 
 let () =
 
@@ -7,11 +7,11 @@ let () =
   if Array.length Sys.argv <> 5 then
     begin
       Printf.printf
-        "\n ✻  Usage: %s infile source sink outfile\n\n%s%!" Sys.argv.(0)
-        ("    🟄  infile  : input file containing a graph\n" ^
-         "    🟄  source  : identifier of the source vertex (used by the ford-fulkerson algorithm)\n" ^
-         "    🟄  sink    : identifier of the sink vertex (ditto)\n" ^
-         "    🟄  outfile : output file in which the result should be written.\n\n") ;
+        "\n âœ»  Usage: %s infile source sink outfile\n\n%s%!" Sys.argv.(0)
+        ("    ðŸŸ„  infile  : input file containing a graph\n" ^
+         "    ðŸŸ„  source  : identifier of the source vertex (used by the ford-fulkerson algorithm)\n" ^
+         "    ðŸŸ„  sink    : identifier of the sink vertex (ditto)\n" ^
+         "    ðŸŸ„  outfile : output file in which the result should be written.\n\n") ;
       exit 0
     end ;
 
@@ -29,8 +29,9 @@ let () =
   (* Open file *)
   let graph = from_file infile in
 
+  let gmap graph (string_of_int) in
+
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
 
   ()
-
