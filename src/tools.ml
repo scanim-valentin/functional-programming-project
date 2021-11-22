@@ -13,3 +13,5 @@ let add_arc gr n1 n2 p =
   match find_arc gr n1 n2 with
   | Some x -> new_arc gr n1 n2 (x + p)
   | None -> new_arc gr n1 n2 p
+
+let string_of_flow (a,b) = ((string_of_int a)^"/")^(string_of_int b)

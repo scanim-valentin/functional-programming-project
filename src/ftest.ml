@@ -31,9 +31,10 @@ let () =
   let graph = from_file infile in
 
   let graph = gmap graph int_of_string in
-  let graph = add_arc graph 0 5 66 in
-  let graph = gmap graph string_of_int in
 
+  let graph = init_ff graph in
+
+  let graph = gmap graph string_of_flow in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
 
