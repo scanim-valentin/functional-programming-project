@@ -20,6 +20,13 @@ type path = string
 let iof = int_of_float
 let foi = float_of_int
 
+let soi = string_of_int
+let ios = int_of_string
+
+let sof = string_of_float
+let fos = float_of_string
+
+
 let index_i id = iof (sqrt (foi id *. 1.1))
 
 let compute_x id = 20 + 180 * index_i id
@@ -77,6 +84,37 @@ let read_comment graph line =
   with _ ->
     Printf.printf "Unknown line:\n%s\n%!" line ;
     failwith "from_file"
+
+(*Converts a graph to a dot file
+let export graph name size = 
+
+  let print_arc id1 id2 str
+
+  let content = "graph "^name in
+  let content = content^" {\nsize=\""^(sof size) in
+  let content = content^"\";\n" in
+  let content = e_fold graph in
+  content.*)
+
+
+let export path graph =
+
+    (* Open a write-file. *)
+    let ff = open_out path in
+  
+    (* Write in this file. *)
+    fprintf ff "digraph my_graph {
+    rankdir=LR;
+    size=\"8,5\"
+    node [shape = circle];\n" ;
+  
+    (* Write all arcs *)
+    let _ = e_fold graph (fun nul id1 id2 lbl -> fprintf ff "    %d -> %d [label=\"%s\"];\n" id1 id2 lbl) () in
+  
+    fprintf ff "}\n" ;
+  
+    close_out ff ;
+    ()
 
 let from_file path =
 
