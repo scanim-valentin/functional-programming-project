@@ -29,7 +29,9 @@ let () =
   (* Open file *)
   let graph = from_file infile in
 
-  let gmap graph (string_of_int) in
+  let graph = gmap graph (int_of_string) in
+
+  let graph = gmap graph (string_of_int) in
 
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
