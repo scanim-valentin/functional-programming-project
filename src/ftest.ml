@@ -32,9 +32,11 @@ let () =
 
   let graph = gmap graph int_of_string in
 
-  let graph = init_ff graph in
+  (* let graph = init_ff graph in *)
+  let graph = clone_nodes graph in
+  let graph = add_double_arc graph 0 1 (1,96) in 
 
-  let graph = gmap graph string_of_flow in
+  let graph = gmap graph string_of_int in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
 
