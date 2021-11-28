@@ -35,7 +35,7 @@ let () =
   (* let graph = init_ff graph in *)
   
   let graph = init_ff graph in 
-  let graph = gr_gap graph in  
+  let graph = gap_from_flow graph in  
   let graph = gmap graph string_of_int in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
