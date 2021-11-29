@@ -1,7 +1,9 @@
 open Graph
 open Tools
 
-val ford_fulkerson: (int*int) graph -> id -> id -> (int*int) graph
+(*type cost = Inf | Finite of int*)
+
+val ford_fulkerson: (*int) graph -> id -> id -> (int*int) graph
 
 val init_ff: int graph -> (int*int) graph
 
