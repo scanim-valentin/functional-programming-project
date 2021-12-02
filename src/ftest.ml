@@ -1,7 +1,7 @@
 open Gfile
 open Tools
 open Algorithm
-
+open Printf
 let () =
 
   (* Check the number of command-line arguments *)
@@ -23,8 +23,8 @@ let () =
   and outfile = Sys.argv.(4)
 
   (* These command-line arguments are not used for the moment. *)
-  and _source = int_of_string Sys.argv.(2)
-  and _sink = int_of_string Sys.argv.(3)
+  and source = int_of_string Sys.argv.(2)
+  and sink = int_of_string Sys.argv.(3)
   in
 
   (* Open file *)
@@ -35,11 +35,15 @@ let () =
   (* let graph = init_ff graph in *)
   
   let graph = init_ff graph in 
-  let graph = gap_from_flow graph in  
+  let graph = gap_from_flow graph in
+  (*let path = find_path source sink [] [] graph in
+  let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
+  let path_string = String.concat "->" mapped in
+  printf "%s\n%!" path_string *)
   let graph = gmap graph string_of_int in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
 
   let () = export (outfile^".dot") graph in
-
+  
   ()
