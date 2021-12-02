@@ -13,11 +13,15 @@ let add_double_arc gr_int n1 n2 (lbl1,lbl2) =
 (*             (src)        (acc) (n1)  (n2)  (data arc)   (acc)  *)
 let gap_from_flow gr_flow = e_fold gr_flow add_double_arc (clone_nodes gr_flow)
 
-(*Returns the first out arc to a non marked node or none if all have been marked*)
+(*Returns the first out arc to a non marked AND strictly positive node or none if all have been marked*)
 let rec first_non_marked out_arc_lst marked_nodes_lst =
-        let cond_arc (idA,_) = match (List.find_opt ( fun idB -> (idB == idA) ) marked_nodes_lst ) with
-            |None -> false
-            |Some id -> true in
+        let cond_arc (idA,value) = if (value = 0) then
+                false
+            else 
+                match (List.find_opt ( fun idB -> (idB = idA) ) marked_nodes_lst ) with
+                    |None -> true 
+                    |Some id -> false in
+    
         List.find_opt cond_arc out_arc_lst
         
 (*Returns flow variation for a path*)
@@ -42,20 +46,26 @@ let rec update_graph path gr_int mn = match path with
                 
 (*Finds a path in a graph between id1 and id2 based on depth search*)
 let rec find_path id1 id2 acc_path marked_nodes gr_gap = 
-    let iter_from idN = 
+    let deb = (printf "find_path from node %d to node %d\n%!" id1 id2) in
+    let iter_from idN =
+            let deb = (printf "iter_from node %d\n%!" idN) in
             ( match (out_arcs gr_gap idN) with
                 |[]                -> (*id1 is isolated*)
+                    let deb = (printf "out_arcs gr_gap idN = []\n%!") in
                     acc_path
                     (*printf "\n%s%!" "Isolated"*)  
                 |out_arcs_list -> (*iterating on the first node that is not 
                                 in the marked_nodes list and marking the next node*)
+                    let deb = (printf "out_arcs is not empty \n%!") in
+                    
                     ( match (first_non_marked out_arcs_list marked_nodes ) with
                         |None -> (*All next nodes have been marked (i.e. all path have been explored)*)
+                            let deb = (printf "all nodes have been marked\n%!") in
                             acc_path (*Algorithm ends here*)
                         |Some (id_next,value) -> (*Iterating on the next node*)
                             (*printf "Next node : %d\n%!" id_next;  *)
-                
-                            find_path id_next id2 [(id_next,value)] (id_next::marked_nodes) gr_gap)) in
+                            let deb = (printf "next non marked is node %d \n%!" id_next) in
+                            find_path id_next id2 ((id_next,value)::acc_path) (id_next::marked_nodes) gr_gap)) in
     match acc_path with
         |[] -> (*beginning depth path search from id1 to id2*)
                         iter_from id1
@@ -63,4 +73,5 @@ let rec find_path id1 id2 acc_path marked_nodes gr_gap =
             if (id_next == id2) then (*path is complete*) 
                 acc_path
             else (*destination hasn't been reached yet*)
+                
                 iter_from id_next

@@ -36,14 +36,14 @@ let () =
   
   let graph = init_ff graph in 
   let graph = gap_from_flow graph in
-  (*let path = find_path source sink [] [] graph in
+  let path = find_path source sink [] [] graph in
   let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
-  let path_string = String.concat "->" mapped in
-  printf "%s\n%!" path_string *)
-  let graph = gmap graph string_of_int in
+  let path_string = String.concat "<-" mapped in
+  printf "%s\n%!" path_string 
+  (*let graph = gmap graph string_of_int in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
 
   let () = export (outfile^".dot") graph in
   
-  ()
+  ()*)
