@@ -75,3 +75,27 @@ let rec find_path id1 id2 acc_path marked_nodes gr_gap =
             else (*destination hasn't been reached yet*)
                 
                 iter_from id_next
+
+
+(*Implementing the Ford-Fulkerson algorithm*)
+let ford_fulkerson gr_int id1 id2 =
+    let gr_flow = init_ff gr_int in
+    let gr_gap = gap_from_flow gr_flow in
+
+    let rec iter src sk gr_gp i =
+        let i = i + 1 in
+        let path = find_path src sk [] [] gr_gp in
+
+        let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
+        let path_string = String.concat "<-" mapped in
+        let deb = printf "%s\n%!" path_string in
+        if(i < 10)then
+            let outfile = "outfile"^(string_of_int i) in
+            write_file outfile gr_gp in
+            export (outfile^".dot") gr_gap in
+
+        match path with
+            |[] -> gr_gp
+            |_::_ -> iter src sk ( update_graph path gr_gp (flow_variation path 0) ) 0 in
+
+    iter id1 id2 gr_gap 0
