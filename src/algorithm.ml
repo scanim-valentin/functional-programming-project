@@ -72,32 +72,38 @@ let rec find_path id1 id2 acc_path marked_nodes gr_gap =
     iter_from id1
   |(id_next,value)::tl -> (*is path complete?*) 
     if (id_next == id2) then (*path is complete*) 
+      let deb = (printf "next non marked is destination %d \n%!" id_next) in
       acc_path
-    else (*destination hasn't been reached yet*)
+    else (*destination hasn't been reached yet*)  
 
-      iter_from id_next
+      match(iter_from id_next)with
+      |(id_fin,_)::_-> if(id_fin <> id2)then
+          (find_path id1 id2 tl (id_fin::marked_nodes) gr_gap)
+        else 
+      |
 
 
-(*Implementing the Ford-Fulkerson algorithm*)
-let ford_fulkerson gr_int id1 id2 =
-  let gr_flow = init_ff gr_int in
-  let gr_gap = gap_from_flow gr_flow in
 
-  let rec iter src sk gr_gp i =
-    let i = i + 1 in
-    let path = find_path src sk [] [] gr_gp in
+        (*Implementing the Ford-Fulkerson algorithm*)
+        let ford_fulkerson gr_int id1 id2 =
+          let gr_flow = init_ff gr_int in
+          let gr_gap = gap_from_flow gr_flow in
 
-    let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
-    let path_string = String.concat "<-" mapped in
-    let deb = printf "%s\n%!" path_string in
-    (*if(i < 10)then
-      begin let outfile = "outfile"^(string_of_int i) in
-        let str_gr_gp = gmap gr_gp string_of_int in
-        let f = write_file outfile str_gr_gp in
-        let f = export (outfile^".dot") str_gr_gp in end*)
+          let rec iter src sk gr_gp i =
+            let i = i + 1 in
+            let path = find_path src sk [] [] gr_gp in
 
-    match path with
-    |[] -> printf "saucisse\n%!" ; gr_gap
-    |_::_ -> printf "Flow min : %d\n%!" (flow_variation path 0) ; iter src sk ( update_graph path gr_gp (flow_variation path 0) ) 0 in
+            let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
+            let path_string = String.concat "<-" mapped in
+            let deb = printf "%s\n%!" path_string in
+            (*if(i < 10)then
+              begin let outfile = "outfile"^(string_of_int i) in
+                let str_gr_gp = gmap gr_gp string_of_int in
+                let f = write_file outfile str_gr_gp in
+                let f = export (outfile^".dot") str_gr_gp in end*)
 
-  iter id1 id2 gr_gap 0
+            match path with
+            |[] -> printf "saucisse\n%!" ; gr_gap
+            |_::_ -> printf "Flow min : %d\n%!" (flow_variation path 0) ; iter src sk ( update_graph path gr_gp (flow_variation path 0) ) 0 in
+
+          iter id1 id2 gr_gap 0
