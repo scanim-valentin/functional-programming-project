@@ -1,4 +1,5 @@
 open Graph
+open Gfile
 open Tools
 open Printf
 
@@ -91,8 +92,8 @@ let ford_fulkerson gr_int id1 id2 =
         let deb = printf "%s\n%!" path_string in
         if(i < 10)then
             let outfile = "outfile"^(string_of_int i) in
-            write_file outfile gr_gp in
-            export (outfile^".dot") gr_gap in
+            let f = write_file outfile gr_gp in
+            let f = export (outfile^".dot") gr_gap in
 
         match path with
             |[] -> gr_gp
