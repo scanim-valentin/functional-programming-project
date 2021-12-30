@@ -43,10 +43,38 @@ let rec update_graph path gr_int mn = match path with
     let new_gr_int = add_arc gr_int id1 id2 (-mn) in 
     add_arc new_gr_int id2 id1 mn
 
+(*Finds a path (list of (arc id)) between source and sink *)
+let find_path source sink graph =
 
+  (*acc_path : the path to complete ; marked_nodes : list of marked nodes to avoid*)
+  let rec step acc_path marked_nodes current src sk graph =
+    
+    (*Checking if destination has been reached*)
+    if(current = sk)then 
+      acc_path
+  else
+    (*Finding the next node that hasn't been marked*)
+    match(first_non_marked (out_arcs graph current) marked_nodes)with
+      |None -> (*current is isolated (i.e. we need to go back)*)
+        (match(acc_path)with
+          |[] -> (*path is empty which means there is no available path (current = source)*)
+            []
+          |last::prev_tail -> (*path is not empty which means we can go back (i.e. pop the path's head)*)
+            (match(prev_tail)with
+              |[] -> (*back at the source node*)
+                step [] (current::marked_nodes) src sk src graph
+              |(previous,_)::tl -> (*marking this node and stepping back into the previous node*)
+                step tl (current::marked_nodes) previous sk src graph
+            ) 
+        )
+      |Some (next,w) -> (*stepping into the next non marked node*)
+        step ((next,w)::acc_path) (current::marked_nodes) next src sk graph in
 
+  step [] [] source source sink graph
+
+        (*
 (*Finds a path in a graph between id1 and id2 based on depth search*)
-let rec find_path id1 id2 acc_path marked_nodes gr_gap = 
+let rec find_path_OLD id1 id2 acc_path marked_nodes gr_gap = 
   let deb = (printf "find_path from node %d to node %d\n%!" id1 id2) in
   let iter_from idN =
     let deb = (printf "iter_from node %d\n%!" idN) in
@@ -75,17 +103,18 @@ let rec find_path id1 id2 acc_path marked_nodes gr_gap =
       let deb = (printf "next non marked is destination %d \n%!" id_next) in
       acc_path
     else (*destination hasn't been reached yet*)  
-
       match(iter_from id_next)with
       |(id_fin,_)::_-> if(id_fin <> id2)then
           (find_path id1 id2 tl (id_fin::marked_nodes) gr_gap)
         else 
-      |
+          
 
+*)
 
 
         (*Implementing the Ford-Fulkerson algorithm*)
-        let ford_fulkerson gr_int id1 id2 =
+ 
+(*       let ford_fulkerson gr_int id1 id2 =
           let gr_flow = init_ff gr_int in
           let gr_gap = gap_from_flow gr_flow in
 
@@ -107,3 +136,4 @@ let rec find_path id1 id2 acc_path marked_nodes gr_gap =
             |_::_ -> printf "Flow min : %d\n%!" (flow_variation path 0) ; iter src sk ( update_graph path gr_gp (flow_variation path 0) ) 0 in
 
           iter id1 id2 gr_gap 0
+*)

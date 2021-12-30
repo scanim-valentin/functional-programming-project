@@ -36,8 +36,9 @@ let () =
 
   let graph = init_ff graph in 
   let graph = gap_from_flow graph in
-  let path = find_path source sink [] [] graph in
+  let path = find_path source sink graph in
   let flow_var = flow_variation path max_int in
+  
   printf "Flow min : %d\n%!" flow_var ;
   let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
   let path_string = String.concat "<-" mapped in
