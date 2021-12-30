@@ -51,12 +51,14 @@ let () =
 
   ()*)
 
-(*(* Open file *)
+
+  (*
+(* Open file *)
   let graph = from_file infile in
 
   let graph = gmap graph int_of_string in
 
-  let graph = ford_fulkerson graph source sink in
+  (*let graph = ford_fulkerson graph source sink in*)
 
   let graph = gmap graph string_of_int in
   (* Rewrite the graph that has been read. *)
@@ -64,4 +66,6 @@ let () =
 
   let () = export (outfile^".dot") graph in
 
-  ()*)
+  ()
+
+  *)
