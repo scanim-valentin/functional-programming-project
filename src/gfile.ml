@@ -85,18 +85,8 @@ let read_comment graph line =
     Printf.printf "Unknown line:\n%s\n%!" line ;
     failwith "from_file"
 
-(*Converts a graph to a dot file
-let export graph name size = 
 
-  let print_arc id1 id2 str
-
-  let content = "graph "^name in
-  let content = content^" {\nsize=\""^(sof size) in
-  let content = content^"\";\n" in
-  let content = e_fold graph in
-  content.*)
-
-
+(*Converts a graph to a dot file*)
 let export path graph =
 
     (* Open a write-file. *)

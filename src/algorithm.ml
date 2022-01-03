@@ -27,15 +27,19 @@ let rec first_non_marked out_arc_lst marked_nodes_lst =
 
 (*Returns flow variation for a path*)
 (*flow_variation: (id*int) list -> int -> int *)
-let rec flow_variation path min_acc = match path with 
-  |[] -> 0 
-  |(_,value)::tl -> (*Getting the minimal gap*)
-    if( value < min_acc )then 
-      flow_variation tl value 
-    else 
-      flow_variation tl min_acc 
+let flow_variation path = 
+  let rec step path min_acc = 
+    match path with 
+        |[] -> 0 
+      |(_,value)::tl -> (*Getting the minimal gap*)
+        if( value < min_acc )then 
+          step tl value 
+        else 
+          step tl min_acc in
+    
+  step path 0
 
-(*cursed*)
+
 let rec update_graph path gr_int mn = match path with
   |[] -> gr_int
   |[(id1,val1)] -> gr_int
@@ -72,68 +76,48 @@ let find_path source sink graph =
 
   step [] [] source source sink graph
 
-        (*
-(*Finds a path in a graph between id1 and id2 based on depth search*)
-let rec find_path_OLD id1 id2 acc_path marked_nodes gr_gap = 
-  let deb = (printf "find_path from node %d to node %d\n%!" id1 id2) in
-  let iter_from idN =
-    let deb = (printf "iter_from node %d\n%!" idN) in
-    ( match (out_arcs gr_gap idN) with
-      |[]                -> (*id1 is isolated*)
-        let deb = (printf "out_arcs gr_gap idN = []\n%!") in
-        acc_path
-      (*printf "\n%s%!" "Isolated"*)  
-      |out_arcs_list -> (*iterating on the first node that is not 
-                          in the marked_nodes list and marking the next node*)
-        let deb = (printf "out_arcs is not empty \n%!") in
+(*Implementing the Ford-Fulkerson algorithm*)
+let ford_fulkerson gr_int id1 id2 =
+  let gr_flow = init_ff gr_int in
+  let gr_gap = gap_from_flow gr_flow in
 
-        ( match (first_non_marked out_arcs_list marked_nodes ) with
-          |None -> (*All next nodes have been marked (i.e. all path have been explored)*)
-            let deb = (printf "all nodes have been marked\n%!") in
-            acc_path (*Algorithm ends here*)
-          |Some (id_next,value) -> (*Iterating on the next node*)
-            (*printf "Next node : %d\n%!" id_next;  *)
-            let deb = (printf "next non marked is node %d \n%!" id_next) in
-            find_path id_next id2 ((id_next,value)::acc_path) (id_next::marked_nodes) gr_gap)) in
-  match acc_path with
-  |[] -> (*beginning depth path search from id1 to id2*)
-    iter_from id1
-  |(id_next,value)::tl -> (*is path complete?*) 
-    if (id_next == id2) then (*path is complete*) 
-      let deb = (printf "next non marked is destination %d \n%!" id_next) in
-      acc_path
-    else (*destination hasn't been reached yet*)  
-      match(iter_from id_next)with
-      |(id_fin,_)::_-> if(id_fin <> id2)then
-          (find_path id1 id2 tl (id_fin::marked_nodes) gr_gap)
-        else 
-          
+  let rec iter src sk gr_gp i =
+    let path = find_path src sk gr_gp in
+    let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
+    let path_string = String.concat "<-" mapped in
+    let () = printf "%s\n%!" path_string in
+    match path with 
+    |[] -> 
+      let () = printf "saucisse\n%!" in 
+      gr_gap
+    |_::_ -> (*A path exists: updating the graph based on the minimal flow*)
+      let flow_min = flow_variation path in
+      let () = printf "Flow min : %d\n%!" (flow_min) in 
+      let updated_graph = update_graph path gr_gp (flow_min) in
+      iter src sk updated_graph 0 in
+  
+  iter id1 id2 gr_gap 0
 
-*)
+(* OLD
+let ford_fulkerson gr_int id1 id2 =
+  let gr_flow = init_ff gr_int in
+  let gr_gap = gap_from_flow gr_flow in
 
+  let rec iter src sk gr_gp i =
+    let path = find_path src sk gr_gp in
+    let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
+    let path_string = String.concat "<-" mapped in
+    let () = printf "%s\n%!" path_string in
+    match path with 
+    |[] -> 
+      let () = printf "saucisse\n%!" in 
+      gr_gap
+    |_::_ -> (*A path exists: updating the graph based on the minimal flow*)
+      let flow_min = flow_variation path 0 in
+      let () = printf "Flow min : %d\n%!" (flow_min) in 
+      let updated_graph = update_graph path gr_gp (flow_min) in
+      iter src sk updated_graph 0 in
+  
+  iter id1 id2 gr_gap 0
 
-        (*Implementing the Ford-Fulkerson algorithm*)
- 
-(*       let ford_fulkerson gr_int id1 id2 =
-          let gr_flow = init_ff gr_int in
-          let gr_gap = gap_from_flow gr_flow in
-
-          let rec iter src sk gr_gp i =
-            let i = i + 1 in
-            let path = find_path src sk [] [] gr_gp in
-
-            let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
-            let path_string = String.concat "<-" mapped in
-            let deb = printf "%s\n%!" path_string in
-            (*if(i < 10)then
-              begin let outfile = "outfile"^(string_of_int i) in
-                let str_gr_gp = gmap gr_gp string_of_int in
-                let f = write_file outfile str_gr_gp in
-                let f = export (outfile^".dot") str_gr_gp in end*)
-
-            match path with
-            |[] -> printf "saucisse\n%!" ; gr_gap
-            |_::_ -> printf "Flow min : %d\n%!" (flow_variation path 0) ; iter src sk ( update_graph path gr_gp (flow_variation path 0) ) 0 in
-
-          iter id1 id2 gr_gap 0
 *)

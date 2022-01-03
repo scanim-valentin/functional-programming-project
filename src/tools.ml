@@ -4,7 +4,7 @@ open Graph
 (* assert false is of type ∀α.α, so the type-checker is happy. *)
 let clone_nodes gr = n_fold gr new_node empty_graph 
 
-(*On en est là lol*)
+
 let gmap gr f = 
   let gmap_aux gr id1 id2 ngr = new_arc gr id1 id2 (f ngr) in 
   e_fold gr gmap_aux (clone_nodes gr) 
