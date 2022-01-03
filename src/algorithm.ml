@@ -40,15 +40,28 @@ let flow_variation pth =
     |None -> 0
     |Some min -> min
 
-let rec update_graph src path gr_int mn = 
-  match path with
-  |[] -> gr_int
-  |[(id1,val1)] -> (*A single element in the path means theres a direct path between source and sink*)
-    let new_gr_int = add_arc gr_int id1 src (-mn) in 
-    add_arc new_gr_int src id1 mn
-  |(id1,val1)::((id2,val2)::tl) -> (*Updating the out and in arc values along the given path*)
-    let new_gr_int = add_arc gr_int id2 id1 (-mn) in 
-    add_arc new_gr_int id1 id2 mn
+let update_graph source pth graph min = 
+    
+  let rec operation src path gr_int mn = 
+      match path with
+        |[] -> gr_int
+        |[(id1,val1)] -> (*A single element in the path means theres a direct path between source and sink*)
+          let new_gr_int = add_arc gr_int id1 src (-mn) in 
+          add_arc new_gr_int src id1 mn
+        |(id1,val1)::((id2,val2)::tl) -> (*Updating the out and in arc values along the given path*)
+          let new_gr_int = add_arc gr_int id2 id1 (-mn) in 
+          add_arc new_gr_int id1 id2 mn in
+    
+    let remove_invalid_arc gr = 
+      let only_postive gr id1 id2 value = if(value > 0) then
+          new_arc gr id1 id2 value 
+        else
+          gr in 
+      e_fold gr only_postive (clone_nodes gr) in 
+    
+    let updated_graph = operation source pth graph min in
+    remove_invalid_arc updated_graph
+   
 
 (*Finds a path (list of (arc id)) between source and sink *)
 let find_path source sink graph =
