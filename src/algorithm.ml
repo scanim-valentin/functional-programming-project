@@ -25,7 +25,7 @@ let rec first_non_marked out_arc_lst marked_nodes_lst =
 
   List.find_opt cond_arc out_arc_lst
 
-(*Returns flow variation for a path*)
+(*Returns minimal flow for a path*)
 (*flow_variation: (id*int) list -> int -> int *)
 let flow_variation pth = 
   let folding acc (_,value) = 
@@ -40,12 +40,15 @@ let flow_variation pth =
     |None -> 0
     |Some min -> min
 
-let rec update_graph path gr_int mn = match path with
+let rec update_graph src path gr_int mn = 
+  match path with
   |[] -> gr_int
-  |[(id1,val1)] -> gr_int
+  |[(id1,val1)] -> (*A single element in the path means theres a direct path between source and sink*)
+    let new_gr_int = add_arc gr_int id1 src (-mn) in 
+    add_arc new_gr_int src id1 mn
   |(id1,val1)::((id2,val2)::tl) -> (*Updating the out and in arc values along the given path*)
-    let new_gr_int = add_arc gr_int id1 id2 (-mn) in 
-    add_arc new_gr_int id2 id1 mn
+    let new_gr_int = add_arc gr_int id2 id1 (-mn) in 
+    add_arc new_gr_int id1 id2 mn
 
 (*Finds a path (list of (arc id)) between source and sink *)
 let find_path source sink graph =
@@ -81,21 +84,21 @@ let ford_fulkerson grph id1 id2 =
   
   let rec iter src sk graph i =
     let path = find_path src sk graph in
-    let mapped = List.map (fun (idN, value) -> sprintf "(id %d, value%d)" idN value) path in
+    let mapped = List.map (fun (idN, value) -> sprintf "(id %d, value %d)" idN value) path in
     let path_string = String.concat "<-" mapped in
     let () = printf "%s\n%!" path_string in
     match path with 
     |[] -> 
-      let () = printf "saucisse\n%!" in 
+      let () = printf "No path\n%!" in 
       graph
     |_::_ -> (*A path exists: updating the graph based on the minimal flow*)
       let flow_min = flow_variation path in
-      let () = printf "Flow min : %d\n%!" (flow_min) in 
-      let updated_graph = update_graph path graph (flow_min) in
+      let () = printf "Flow min : %d\n%!" flow_min in 
+      let updated_graph = update_graph src path graph flow_min in
       if(flow_min = 0)then
         graph
       else
-      iter src sk updated_graph 0 in
+        iter src sk updated_graph 0 in
   iter id1 id2 grph 0
 
 (* OLD

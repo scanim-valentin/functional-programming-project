@@ -15,4 +15,4 @@ val find_path : id -> id -> (int) graph -> (id * int) list
 
 val flow_variation : (id*int) list -> int
 
-val update_graph : (id * 'a) list -> int graph -> int -> int graph
+val update_graph : id -> (id * 'a) list -> int graph -> int -> int graph
