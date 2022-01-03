@@ -27,18 +27,18 @@ let rec first_non_marked out_arc_lst marked_nodes_lst =
 
 (*Returns flow variation for a path*)
 (*flow_variation: (id*int) list -> int -> int *)
-let flow_variation path = 
-  let rec step path min_acc = 
-    match path with 
-        |[] -> 0 
-      |(_,value)::tl -> (*Getting the minimal gap*)
-        if( value < min_acc )then 
-          step tl value 
-        else 
-          step tl min_acc in
-    
-  step path 0
-
+let flow_variation pth = 
+  let folding acc (_,value) = 
+    (match acc with 
+      |None -> Some value (*Fist call case*)
+      |Some x -> if(value < x)then
+          Some value
+        else
+          Some x) in
+        
+  match (List.fold_left folding None pth) with
+    |None -> 0
+    |Some min -> min
 
 let rec update_graph path gr_int mn = match path with
   |[] -> gr_int
@@ -77,26 +77,26 @@ let find_path source sink graph =
   step [] [] source source sink graph
 
 (*Implementing the Ford-Fulkerson algorithm*)
-let ford_fulkerson gr_int id1 id2 =
-  let gr_flow = init_ff gr_int in
-  let gr_gap = gap_from_flow gr_flow in
-
-  let rec iter src sk gr_gp i =
-    let path = find_path src sk gr_gp in
-    let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
+let ford_fulkerson grph id1 id2 =
+  
+  let rec iter src sk graph i =
+    let path = find_path src sk graph in
+    let mapped = List.map (fun (idN, value) -> sprintf "(id %d, value%d)" idN value) path in
     let path_string = String.concat "<-" mapped in
     let () = printf "%s\n%!" path_string in
     match path with 
     |[] -> 
       let () = printf "saucisse\n%!" in 
-      gr_gap
+      graph
     |_::_ -> (*A path exists: updating the graph based on the minimal flow*)
       let flow_min = flow_variation path in
       let () = printf "Flow min : %d\n%!" (flow_min) in 
-      let updated_graph = update_graph path gr_gp (flow_min) in
+      let updated_graph = update_graph path graph (flow_min) in
+      if(flow_min = 0)then
+        graph
+      else
       iter src sk updated_graph 0 in
-  
-  iter id1 id2 gr_gap 0
+  iter id1 id2 grph 0
 
 (* OLD
 let ford_fulkerson gr_int id1 id2 =
