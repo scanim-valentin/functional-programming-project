@@ -41,26 +41,28 @@ let flow_variation pth =
     |Some min -> min
 
 let update_graph source pth graph min = 
-    
+   
   let rec operation src path gr_int mn = 
+      (*let () = printf "op ! \n%!" in*)
       match path with
         |[] -> gr_int
         |[(id1,val1)] -> (*A single element in the path means theres a direct path between source and sink*)
-          let new_gr_int = add_arc gr_int id1 src (-mn) in 
-          add_arc new_gr_int src id1 mn
+          let new_gr_int = add_arc gr_int src id1 (-mn) in 
+          add_arc new_gr_int id1 src mn
         |(id1,val1)::((id2,val2)::tl) -> (*Updating the out and in arc values along the given path*)
           let new_gr_int = add_arc gr_int id2 id1 (-mn) in 
-          add_arc new_gr_int id1 id2 mn in
+          let new_gr_int = add_arc new_gr_int id1 id2 mn in
+          operation src ((id2,val2)::tl) new_gr_int mn in
     
-    let remove_invalid_arc gr = 
-      let only_postive gr id1 id2 value = if(value > 0) then
-          new_arc gr id1 id2 value 
-        else
-          gr in 
-      e_fold gr only_postive (clone_nodes gr) in 
+  let remove_invalid_arc gr = 
+    let only_postive gr id1 id2 value = if(value > 0) then
+        new_arc gr id1 id2 value 
+      else
+        gr in 
+    e_fold gr only_postive (clone_nodes gr) in 
     
-    let updated_graph = operation source pth graph min in
-    remove_invalid_arc updated_graph
+  let updated_graph = operation source pth graph min in
+  remove_invalid_arc updated_graph
    
 
 (*Finds a path (list of (arc id)) between source and sink *)
@@ -108,10 +110,12 @@ let ford_fulkerson grph id1 id2 =
       let flow_min = flow_variation path in
       let () = printf "Flow min : %d\n%!" flow_min in 
       let updated_graph = update_graph src path graph flow_min in
+      let string_graph = gmap updated_graph string_of_int in
+      let () = export ("./iterations/iter"^(string_of_int i)^".dot") string_graph in
       if(flow_min = 0)then
         graph
       else
-        iter src sk updated_graph 0 in
+        iter src sk updated_graph (i+1) in
   iter id1 id2 grph 0
 
 (* OLD
