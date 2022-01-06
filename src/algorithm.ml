@@ -3,17 +3,6 @@ open Gfile
 open Tools
 open Printf
 
-(*Initializes the flow for every arc*)
-let init_ff gr_int = gmap gr_int ( fun lbl->(0,lbl) ) 
-let add_double_arc gr_int n1 n2 (lbl1,lbl2) = 
-  let gr_r = add_arc gr_int n2 n1 lbl1 in
-  add_arc gr_r n1 n2 lbl2 
-(*Returns the gap graph*)
-
-(* val e_fold: 'a graph -> ('b -> id -> id -> 'a -> 'b) -> 'b -> 'b *)
-(*             (src)        (acc) (n1)  (n2)  (data arc)   (acc)  *)
-let gap_from_flow gr_flow = e_fold gr_flow add_double_arc (clone_nodes gr_flow)
-
 (*Returns the first out arc to a non marked AND strictly positive node or none if all have been marked*)
 let rec first_non_marked out_arc_lst marked_nodes_lst =
   let cond_arc (idA,value) = if (value = 0) then
@@ -124,27 +113,4 @@ let ford_fulkerson grph id1 id2 =
       else
         iter src sk updated_graph (i+1) (max_flow+flow_min) in
   iter id1 id2 grph 0 0
-
-(* OLD
-let ford_fulkerson gr_int id1 id2 =
-  let gr_flow = init_ff gr_int in
-  let gr_gap = gap_from_flow gr_flow in
-
-  let rec iter src sk gr_gp i =
-    let path = find_path src sk gr_gp in
-    let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
-    let path_string = String.concat "<-" mapped in
-    let () = printf "%s\n%!" path_string in
-    match path with 
-    |[] -> 
-      let () = printf "saucisse\n%!" in 
-      gr_gap
-    |_::_ -> (*A path exists: updating the graph based on the minimal flow*)
-      let flow_min = flow_variation path 0 in
-      let () = printf "Flow min : %d\n%!" (flow_min) in 
-      let updated_graph = update_graph path gr_gp (flow_min) in
-      iter src sk updated_graph 0 in
-  
-  iter id1 id2 gr_gap 0
-
-*)
+      ;; 
