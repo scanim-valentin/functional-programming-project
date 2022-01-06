@@ -70,7 +70,7 @@ let find_path source sink graph =
 
   (*acc_path : the path to complete ; marked_nodes : list of marked nodes to avoid*)
   let rec step acc_path marked_nodes current src sk graph =
-    
+    let () = printf "find_path - Current node : %d | Source : %d | Sink : %d \n%!" current src sk in
     (*Checking if destination has been reached*)
     if(current = sk)then 
       acc_path
@@ -78,18 +78,24 @@ let find_path source sink graph =
     (*Finding the next node that hasn't been marked*)
     match(first_non_marked (out_arcs graph current) marked_nodes)with
       |None -> (*current is isolated (i.e. we need to go back)*)
+        let () = printf "find_path -   All nodes are marked\n%!" in
         (match(acc_path)with
           |[] -> (*path is empty which means there is no available path (current = source)*)
+            let () = printf "find_path -      No available path (current = source)\n%!" in
             []
-          |last::prev_tail -> (*path is not empty which means we can go back (i.e. pop the path's head)*)
+          |_::prev_tail -> (*path is not empty which means we can go back (i.e. pop the path's head)*)
             (match(prev_tail)with
               |[] -> (*back at the source node*)
-                step [] (current::marked_nodes) src sk src graph
-              |(previous,_)::tl -> (*marking this node and stepping back into the previous node*)
-                step tl (current::marked_nodes) previous sk src graph
-            ) 
+                let () = printf "find_path -      Going back into source node %d\n%!" src in
+                step [] (current::marked_nodes) src src sk graph
+                
+              |(previous,w)::tl -> (*marking this node and stepping back into the previous node*)
+                let () = printf "find_path -      Going back into : %d\n%!" previous in
+                step ((previous,w)::tl) (current::marked_nodes) previous src sk graph
+            )
         )
       |Some (next,w) -> (*stepping into the next non marked node*)
+        let () = printf "find_path -    Stepping into : %d\n%!" next in
         step ((next,w)::acc_path) (current::marked_nodes) next src sk graph in
 
   step [] [] source source sink graph
@@ -97,14 +103,15 @@ let find_path source sink graph =
 (*Implementing the Ford-Fulkerson algorithm*)
 let ford_fulkerson grph id1 id2 =
   
-  let rec iter src sk graph i =
+  let rec iter src sk graph i max_flow =
     let path = find_path src sk graph in
     let mapped = List.map (fun (idN, value) -> sprintf "(id %d, value %d)" idN value) path in
     let path_string = String.concat "<-" mapped in
-    let () = printf "%s\n%!" path_string in
+    let () = printf "Path : %s\n%!" path_string in
     match path with 
     |[] -> 
       let () = printf "No path\n%!" in 
+      let () = printf "The algorithm terminated with a maximum flow value of: %d\n%!" max_flow in 
       graph
     |_::_ -> (*A path exists: updating the graph based on the minimal flow*)
       let flow_min = flow_variation path in
@@ -115,8 +122,8 @@ let ford_fulkerson grph id1 id2 =
       if(flow_min = 0)then
         graph
       else
-        iter src sk updated_graph (i+1) in
-  iter id1 id2 grph 0
+        iter src sk updated_graph (i+1) (max_flow+flow_min) in
+  iter id1 id2 grph 0 0
 
 (* OLD
 let ford_fulkerson gr_int id1 id2 =
