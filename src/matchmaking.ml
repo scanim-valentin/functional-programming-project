@@ -32,25 +32,31 @@ let from_file_names path =
   close_in infile ;
   final_list in
 
+(*Initiate a bipartite graph based on a given list of names (each of them are "duplicated" to finally form pairs of names)*)
 let init_matchmaking name_list = 
 
   (*returns an association list between an even number and a name *)
+  (*assoc_list: (int,string) list*)
   let rec init_assoc list assoc_list i = 
     match list with
       |[] -> assoc_list
       |name::tl -> init_assoc tl ((2*i,name)::assoc_list) (i+1) in
   
+  (*Generates the recipient nodes*)
   let fold_init_graph_1 graph (i,name) = 
     let () = printf "init_graph_1 - Creating node %d\n%!" i in
     new_node graph i in
   
+  (*Links the i-th node with every recipient nodes except the one associated to the same name*)
   let fold_link_to_others i graph (index,name) = 
     if(i = index)then
     graph
     else
       let () = printf "init_graph_2 - Linking to node %d \n%!" index in 
+      (*i-1 because i correspond to a recipient node and therefore is even*)
       new_arc graph (i-1) index 1 in
-
+  
+  (*Links buyer and recipient nodes between them*)
   let fold_init_graph_2 assoc_list graph (i,name) = 
     let () = printf "init_graph_2 - Creating node %d \n%!" (i-1)in
     let new_graph = new_node graph (i-1) in
@@ -151,6 +157,7 @@ let export_matchmaking path graph assoc_list =
   let graph = gmap graph string_of_int in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
+  (*Printing the result of the matchmaking*)
   let () = printf "\n\n SECRET SANTA : \n%!" in
   let () = export_matchmaking (outfile^".dot") graph assoc_list in 
 

@@ -18,7 +18,7 @@ let rec first_non_marked out_arc_lst marked_nodes_lst =
 (*flow_variation: (id*int) list -> int -> int *)
 let flow_variation pth = 
   let folding acc (_,value) = 
-    (match acc with 
+    (match acc with  (*Here None is a substitute to infinity*)
       |None -> Some value (*Fist call case*)
       |Some x -> if(value < x)then
           Some value
@@ -42,7 +42,8 @@ let update_graph source pth graph min =
           let new_gr_int = add_arc gr_int id2 id1 (-mn) in 
           let new_gr_int = add_arc new_gr_int id1 id2 mn in
           operation src ((id2,val2)::tl) new_gr_int mn in
-    
+  
+  (*Removes non positive arcs to keep a valid graph*)
   let remove_invalid_arc gr = 
     let only_postive gr id1 id2 value = if(value > 0) then
         new_arc gr id1 id2 value 
@@ -94,23 +95,25 @@ let ford_fulkerson grph id1 id2 =
   
   let rec iter src sk graph i max_flow =
     let path = find_path src sk graph in
+    (*Prints the path in the terminal*)
     let mapped = List.map (fun (idN, value) -> sprintf "(id %d, value %d)" idN value) path in
     let path_string = String.concat "<-" mapped in
     let () = printf "Path : %s\n%!" path_string in
     match path with 
-    |[] -> 
+    |[] -> (*find_path failing to find a path means the algorithm has reached its end*)
       let () = printf "No path\n%!" in 
       let () = printf "The algorithm terminated with a maximum flow value of: %d\n%!" max_flow in 
       graph
     |_::_ -> (*A path exists: updating the graph based on the minimal flow*)
       let flow_min = flow_variation path in
       let () = printf "Flow min : %d\n%!" flow_min in 
+      (*Updating the flows along the path*)
       let updated_graph = update_graph src path graph flow_min in
       let string_graph = gmap updated_graph string_of_int in
       let () = export ("./iterations/iter"^(string_of_int i)^".dot") string_graph in
-      if(flow_min = 0)then
+      if(flow_min = 0)then (*Impossible?*)
         graph
-      else
+      else (*Next iteration based on the updated flows*)
         iter src sk updated_graph (i+1) (max_flow+flow_min) in
   iter id1 id2 grph 0 0
       ;; 
