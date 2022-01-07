@@ -3,6 +3,10 @@ build:
 	@echo "\n==== COMPILING ====\n"
 	ocamlbuild ftest.native
 
+santa:
+	@echo "\n==== COMPILING ====\n"
+	ocamlbuild matchmaking.native
+
 format:
 	ocp-indent --inplace src/*
 
