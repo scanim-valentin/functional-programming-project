@@ -151,7 +151,7 @@ let export_matchmaking path graph assoc_list =
   let graph = gmap graph string_of_int in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
-
+  let () = printf "\n\n SECRET SANTA : \n%!" in
   let () = export_matchmaking (outfile^".dot") graph assoc_list in 
 
   ()
