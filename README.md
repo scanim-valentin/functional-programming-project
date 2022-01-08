@@ -28,11 +28,11 @@ Le fichier SVG peut-être visualisé dans un navigateur (Firefox par exemple).
 ```
 >>> make clean
 >>> make santa
->>> matchmaking.native <liste de noms> <output>
+>>> ./matchmaking.native <liste de noms> <output>
 ```
 Exemple : 
 ```
->>> matchmaking.native names.txt output
+>>> ./matchmaking.native names.txt output
 ```
 
 
