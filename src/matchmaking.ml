@@ -19,8 +19,8 @@ let () =
       try
 
         let line = input_line infile in
-        (* Remove leading and trailing spaces. *)
 
+        (* Remove leading and trailing spaces. *)
         let line = String.trim line in
         (* Ignore empty lines *)
         if line = "" then name_list
