@@ -73,10 +73,10 @@ let find_path source sink graph =
            []
          |_::prev_tail -> (*path is not empty which means we can go back (i.e. pop the path's head) *)
            (match(prev_tail)with
-            |[] -> (*back at the source node *)
+            |[] -> (*Back at the source node *)
               let () = printf "find_path -      Going back into source node %d\n%!" src in
               step [] (current::marked_nodes) src src sk graph
-            |(previous,w)::tl -> (*marking this node and stepping back into the previous node *)
+            |(previous,w)::tl -> (*Marking this node and stepping back into the previous node *)
               let () = printf "find_path -      Going back into : %d\n%!" previous in
               step ((previous,w)::tl) (current::marked_nodes) previous src sk graph
            )
