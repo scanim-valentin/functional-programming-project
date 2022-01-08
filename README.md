@@ -33,5 +33,5 @@ Exemple :
 ```
 
 ### Piste d'amélioration : 
-- Introduire de l'aléatoire dans find_path et plus précisément "mélanger" les différents arcs donné par out_arcs
+- Introduire de l'aléatoire dans find_path et plus précisément "mélanger" les différents arcs donnés par out_arcs
 - Introduire des contraintes pour chaque participant (par exemple budget)
