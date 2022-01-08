@@ -136,7 +136,7 @@ let ford_fulkerson grph id1 id2 =
       let string_graph = gmap updated_graph string_of_int in
 
       let () = export ("./iterations/iter"^(string_of_int i)^".dot") string_graph in
-      if(flow_min = 0)then (*Impossible? *)
+      if (flow_min = 0) then (*Impossible *)
         graph
       else (*Next iteration based on the updated flows *)
         iter src sk updated_graph (i+1) (max_flow+flow_min) in
