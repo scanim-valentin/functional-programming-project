@@ -89,22 +89,22 @@ let read_comment graph line =
 (*Converts a graph to a dot file*)
 let export path graph =
 
-    (* Open a write-file. *)
-    let ff = open_out path in
-  
-    (* Write in this file. *)
-    fprintf ff "digraph my_graph {
+  (* Open a write-file. *)
+  let ff = open_out path in
+
+  (* Write in this file. *)
+  fprintf ff "digraph my_graph {
     rankdir=LR;
     size=\"8,5\"
     node [shape = circle];\n" ;
-  
-    (* Write all arcs *)
-    let _ = e_fold graph (fun nul id1 id2 lbl -> fprintf ff "    %d -> %d [label=\"%s\"];\n" id1 id2 lbl) () in
-  
-    fprintf ff "}\n" ;
-  
-    close_out ff ;
-    ()
+
+  (* Write all arcs *)
+  let _ = e_fold graph (fun nul id1 id2 lbl -> fprintf ff "    %d -> %d [label=\"%s\"];\n" id1 id2 lbl) () in
+
+  fprintf ff "}\n" ;
+
+  close_out ff ;
+  ()
 
 let from_file path =
 
