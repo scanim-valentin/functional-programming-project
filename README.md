@@ -22,6 +22,8 @@ A l'issue de celle-ci, un nouveau fichier graphe est généré ainsi qu'un fichi
 Le fichier SVG peut-être visualisé dans un navigateur (Firefox par exemple).
 
 
+
+
 ## Partie 2 - Application de l'algorithme à un graphe bipartis
 ### Objectif : Organiser un secret santa (chaque personne au sein d'un groupe doit acheter un cadeau à une autre)
 
