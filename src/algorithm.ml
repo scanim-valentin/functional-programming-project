@@ -88,6 +88,7 @@ let find_path source sink graph =
 
 
 (*Implementing the Ford-Fulkerson algorithm *)
+(*ford_fulkerson: (int) graph -> id -> id -> (int) graph *)
 let ford_fulkerson grph id1 id2 =
   let rec iter src sk graph i max_flow =
     let path = find_path src sk graph in
