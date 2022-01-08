@@ -43,15 +43,15 @@ let () =
   let mapped = List.map (fun (idN, value) -> sprintf "(%d,%d)" idN value) path in
   let path_string = String.concat "<-" mapped in
   printf "%s\n%!" path_string *)
-(*let graph = gmap graph string_of_int in
-  (* Rewrite the graph that has been read. *)
-  let () = write_file outfile graph in
+  (*let graph = gmap graph string_of_int in
+    (* Rewrite the graph that has been read. *)
+    let () = write_file outfile graph in
 
-  let () = export (outfile^".dot") graph in
+    let () = export (outfile^".dot") graph in
 
-  ()*)
+    ()*)
 
-(* Open file *)
+  (* Open file *)
   let graph = from_file infile in
 
   let graph = gmap graph int_of_string in
